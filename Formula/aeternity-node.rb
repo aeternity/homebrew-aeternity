@@ -1,19 +1,19 @@
 class AeternityNode < Formula
   desc "Aeternity blockchain reference implementation in Erlang"
   homepage "https://aeternity.com"
-  head "https://github.com/aeternity/aeternity.git"
   url "https://github.com/aeternity/aeternity/releases/download/v5.11.0/aeternity-5.11.0-macos-x86_64.tar.gz"
-  sha256 "970bd7f6562ac0f76539e1ffbde264774120de5b09d0dc24bf2e6b53e704aa07"
   version "5.11.0"
+  sha256 "970bd7f6562ac0f76539e1ffbde264774120de5b09d0dc24bf2e6b53e704aa07"
   license "ISC"
+  head "https://github.com/aeternity/aeternity.git"
 
-  depends_on "libsodium"
+  bottle :unneeded
+
   depends_on "gmp"
+  depends_on "libsodium"
   depends_on "openssl"
 
   uses_from_macos "curl"
-
-  bottle :unneeded
 
   def install
     prefix.install Dir["*"]
