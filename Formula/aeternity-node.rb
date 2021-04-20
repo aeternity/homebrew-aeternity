@@ -1,9 +1,9 @@
 class AeternityNode < Formula
   desc "Aeternity blockchain reference implementation in Erlang"
   homepage "https://aeternity.com"
-  url "https://github.com/aeternity/aeternity/releases/download/v5.11.0/aeternity-5.11.0-macos-x86_64.tar.gz"
-  version "5.11.0"
-  sha256 "970bd7f6562ac0f76539e1ffbde264774120de5b09d0dc24bf2e6b53e704aa07"
+  url "https://github.com/aeternity/aeternity/releases/download/v0.0.0-iris+13.2e93a04/aeternity-0.0.0-iris+13.2e93a04-macos-x86_64.tar.gz"
+  version "0.0.0-iris+13.2e93a04"
+  sha256 "dcacaeb8b17d92b4daa505a00d56375d190dc65b51f58978f50dda58ac455af2"
   license "ISC"
   head "https://github.com/aeternity/aeternity.git"
 
