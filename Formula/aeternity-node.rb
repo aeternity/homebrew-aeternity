@@ -67,12 +67,19 @@ class AeternityNode < Formula
     return unless latest_version_installed?
 
     <<~EOS
-      NOTE The aeternity node is not started by default, run:
-        '#{bin}/aeternity daemon' to start the node in background mode or
-        '#{bin}/aeternity foreground' to start it in foreground mode.
-
-      You may want to add #{bin} to your PATH to use `aeternity` command without full path.
+      To start the node run:
+        brew services start aeternity-node
     EOS
+  end
+
+  plist_options manual: "aeternity-node"
+  service do
+    run [bin/"aeternity", "foreground"]
+    run_type :immediate
+    keep_alive true
+    error_log_path var/"log/aeternity_service.log"
+    log_path var/"log/aeternity_service.log"
+    working_dir var
   end
 
   test do
