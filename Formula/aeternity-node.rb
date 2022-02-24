@@ -64,7 +64,7 @@ class AeternityNode < Formula
     <<~EOS
       NOTE The aeternity node is not started by default, run:
         '#{bin}/aeternity daemon' to start the node in background mode or
-        '#{bin}/aeternity forground' to start it in foreground mode.
+        '#{bin}/aeternity foreground' to start it in foreground mode.
 
       You may want to add #{bin} to your PATH to use `aeternity` command without full path.
     EOS
