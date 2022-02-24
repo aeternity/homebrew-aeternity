@@ -1,33 +1,61 @@
 class AeternityNode < Formula
   desc "Aeternity blockchain reference implementation in Erlang"
   homepage "https://aeternity.com"
-  url "https://github.com/aeternity/aeternity/releases/download/v5.11.0/aeternity-5.11.0-macos-x86_64.tar.gz"
-  version "5.11.0"
-  sha256 "970bd7f6562ac0f76539e1ffbde264774120de5b09d0dc24bf2e6b53e704aa07"
+  version "6.4.0"
   license "ISC"
-  head "https://github.com/aeternity/aeternity.git"
 
-  bottle :unneeded
+  on_macos do
+    if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
+      url "https://github.com/aeternity/aeternity/releases/download/v6.4.0/aeternity-v6.4.0-macos-x86_64.tar.gz"
+      sha256 "8dc84fcbf1a8b18babfcd470c601848d5507b1ec82a3a4882ced84c240b3a3dc"
+    end
+  end
+
+  head do
+    url "https://github.com/aeternity/aeternity.git"
+
+    depends_on "cmake" => :build
+    depends_on "autoconf" => :build
+    depends_on "erlang@22" => :build
+  end
 
   depends_on "gmp"
   depends_on "libsodium"
-  depends_on "openssl"
+  depends_on "openssl@1.1"
+  depends_on "rocksdb" => :recommended
 
   uses_from_macos "curl"
 
+  # HAED are installed from source while :stable we use prebuild packages
+  # while it's not quite standart formula setup, it does the job until more common bottles are supported
   def install
-    prefix.install Dir["*"]
+    if build.head?
+      if build.with? "rocksdb"
+        ohai "Building with shared rocksdb library"
+        ENV["ERLANG_ROCKSDB_OPTS"] = "-DWITH_SYSTEM_ROCKSDB=ON -DWITH_LZ4=ON -DWITH_SNAPPY=ON -DWITH_BZ2=ON -DWITH_ZSTD=ON"
+      else
+        opoo "Building without shared rocksdb library, compiling from source"
+      end
+
+      system "make", "prod-build"
+
+      prefix.install Dir["_build/prod/rel/aeternity/*"]
+    end
+
+    if build.stable?
+      prefix.install Dir["*"]
+
+      inreplace bin/"aeternity" do |s|
+        s.gsub! 'SCRIPT_DIR="$(cd "$(dirname "$SCRIPT")" && pwd -P)"', "SCRIPT_DIR=#{bin}"
+        s.gsub! "set -e", "set -e\nulimit -n 24576"
+      end
+    end
 
     (var/"aeternity/log").mkpath
     (var/"aeternity/data/mnesia").mkpath
 
     prefix.install_symlink var/"aeternity/log"
     (prefix/"data").install_symlink var/"aeternity/data/mnesia"
-
-    inreplace bin/"aeternity" do |s|
-      s.gsub! 'SCRIPT_DIR="$(cd "$(dirname "$SCRIPT")" && pwd -P)"', "SCRIPT_DIR=#{bin}"
-      s.gsub! "set -e", "set -e\nulimit -n 24576"
-    end
   end
 
   def caveats
@@ -36,7 +64,7 @@ class AeternityNode < Formula
     <<~EOS
       NOTE The aeternity node is not started by default, run:
         '#{bin}/aeternity daemon' to start the node in background mode or
-        '#{bin}/aeternity console' to start it in foreground/console mode.
+        '#{bin}/aeternity forground' to start it in foreground mode.
 
       You may want to add #{bin} to your PATH to use `aeternity` command without full path.
     EOS
