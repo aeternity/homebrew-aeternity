@@ -4,6 +4,11 @@ class AeternityNode < Formula
   version "6.4.0"
   license "ISC"
 
+  livecheck do
+    url "https://github.com/aeternity/aeternity/releases/latest"
+    regex(%r{href=.*?/tag/v?(\d+(?:\.\d+)+)["' >]}i)
+  end
+
   on_macos do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       url "https://github.com/aeternity/aeternity/releases/download/v6.4.0/aeternity-v6.4.0-macos-x86_64.tar.gz"
