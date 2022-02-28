@@ -1,7 +1,8 @@
 class AeternityNode < Formula
+  AETERNITY_VERSION = "6.4.0"
   desc "Aeternity blockchain reference implementation in Erlang"
   homepage "https://aeternity.com"
-  version "6.4.0"
+  version AETERNITY_VERSION
   license "ISC"
 
   livecheck do
@@ -11,7 +12,7 @@ class AeternityNode < Formula
 
   on_macos do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/aeternity/aeternity/releases/download/v6.4.0/aeternity-v6.4.0-macos-x86_64.tar.gz"
+      url "https://github.com/aeternity/aeternity/releases/download/v#{AETERNITY_VERSION}/aeternity-v#{AETERNITY_VERSION}-macos-x86_64.tar.gz"
       sha256 "8dc84fcbf1a8b18babfcd470c601848d5507b1ec82a3a4882ced84c240b3a3dc"
     end
   end
@@ -83,10 +84,26 @@ class AeternityNode < Formula
   end
 
   test do
-    system "false"
-    # ENV["AE__CHAIN_PERSIST"] = 0 ?
-    # system bin/"aeternity", "daemon"
-    # system "curl -s -f -S -o /dev/null --retry 6 http://localhost:3013/v2/status"
-    # system bin/"aeternity", "stop"
+    begin
+      port = free_port
+
+      pid = fork do
+        ENV["AE__CHAIN__PERSIST"] = "false"
+        ENV["AE__CHAIN__DB_PATH"] = testpath/"data"
+        ENV["AE__KEYS__DIR"] = testpath/"keys"
+        ENV["AE__LOGGING__LEVEL"] = "none"
+        ENV["AE__HTTP__EXTERNAL__PORT"] = port.to_s
+        exec bin/"aeternity", "foreground"
+      end
+      sleep 3
+
+      expected_output = /\"node_version\":\"#{AETERNITY_VERSION}\"/
+      assert_match expected_output, shell_output("curl -s 127.0.0.1:#{port}/v2/status")
+    ensure
+      if pid
+        Process.kill("TERM", pid)
+        Process.wait(pid)
+      end
+    end
   end
 end
