@@ -1,5 +1,5 @@
 class AeternityNode < Formula
-  AETERNITY_VERSION = "6.5.0"
+  AETERNITY_VERSION = "6.5.1"
   desc "Aeternity blockchain reference implementation in Erlang"
   homepage "https://aeternity.com"
   version AETERNITY_VERSION
@@ -13,7 +13,7 @@ class AeternityNode < Formula
   on_macos do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       url "https://github.com/aeternity/aeternity/releases/download/v#{AETERNITY_VERSION}/aeternity-v#{AETERNITY_VERSION}-macos-x86_64.tar.gz"
-      sha256 "9a116ee19186e3cf3998f1f8caf286622608b51e52da4029ec05ae178cef680d"
+      sha256 "608e12d8b40bdc0a8e840657f6515449f90be211fc6d9182594343bb2dd0081a"
     end
   end
 
