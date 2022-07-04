@@ -13,7 +13,7 @@ class AeternityNode < Formula
   on_macos do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
       url "https://github.com/aeternity/aeternity/releases/download/v#{AETERNITY_VERSION}/aeternity-v#{AETERNITY_VERSION}-macos-x86_64.tar.gz"
-      sha256 "ff3cd6484daf3d140a04b53ff47334cc5d61749f3728890c0ff1abda038f7def"
+      sha256 "4e928d1fbfe33f15b6df375e2a600aac83bea83df2500930573abdf011a44982"
     end
   end
 
